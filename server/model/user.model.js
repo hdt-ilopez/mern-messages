@@ -1,5 +1,5 @@
 import mongoose, { mongo } from 'mongoose';
-import { genSalt, hash } from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  userName: {
+    type: String,
+    required: false,
+  },
   profilePicture: {
     type: String,
     required: false,
@@ -34,9 +38,18 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function (next) {
-  const salt = await genSalt();
-  this.password = await HashChangeEvent(this.password, salt);
-  next();
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 const User = mongoose.model('Users', userSchema);

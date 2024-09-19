@@ -3,16 +3,69 @@ import Victory from '@/assets/victory.svg';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAppStore } from '@/store';
+import axios from 'axios';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const { setUserInfo } = useAppStore();
 
-  const handleLogin = async () => {};
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error('Email and password required to login');
+      return;
+    }
 
-  const handleSignup = async () => {};
+    try {
+      const res = await axios.post(
+        '/api/auth/login',
+        { email, password },
+        { withCredentials: true }
+      );
+
+      if (res.data) {
+        setUserInfo(res.data);
+        toast.success('Login Successful');
+      }
+    } catch (error) {
+      toast.error(error.response.data);
+      console.log(error);
+    }
+  };
+
+  const handleSignup = async () => {
+    if (!email || !password || !confirmPassword) {
+      toast.error(
+        'Email, password, and confirmation password are required to sign up'
+      );
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        '/api/auth/signup',
+        { email, password },
+        { withCredentials: true }
+      );
+
+      if (res.data.user) {
+        setUserInfo(res.data.user);
+        toast.success('Signup successful');
+      }
+    } catch (error) {
+      toast.error(error.response.data);
+      console.error(error);
+    }
+  };
 
   return (
     <div className="h-screen w-screen flex items-center justify-center">
@@ -29,7 +82,7 @@ const Auth = () => {
             </p>
           </div>
           <div className="flex justify-center w-full mt-5">
-            <Tabs className="w-full p-2">
+            <Tabs defaultValue="login" className="w-full p-2">
               <TabsList className="bg-transparent rounded-none w-full">
                 <TabsTrigger
                   value="login"

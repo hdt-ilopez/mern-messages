@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
+import morgan from 'morgan';
 
 import authRoutes from './routes/auth.routes.js';
 
@@ -21,6 +22,7 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(morgan('common'));
 
 app.use('/api/auth', authRoutes);
 
