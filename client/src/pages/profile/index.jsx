@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAppStore } from '@/store';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { ChevronLeft } from 'lucide-react';
 import { createAvatar } from '@dicebear/core';
 import { bottts } from '@dicebear/collection';
 import { useEffect, useState } from 'react';
@@ -77,7 +77,7 @@ const Profile = () => {
           } text-white hover:text-white/80 mb-5 bg-transparent hover:bg-transparent `}
           size="icon"
         >
-          <ArrowBackIosIcon />
+          <ChevronLeft />
         </Button>
         <div className="grid grid-cols-2 text-white mb-5">
           <Avatar className="h-32 w-32 md:w-48 md:h-48 rounded-full overflow-hidden">
