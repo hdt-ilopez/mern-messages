@@ -1,6 +1,6 @@
 const EmptyChatContainer = () => {
   return (
-    <div className="flex-1 md:bg-[#1c1d25] md:flex flex-col justify-center items-center hidden duration-1000 transition-all">
+    <div className="flex-1 bg-[#1c1d25] md:flex flex-col justify-center items-center  duration-1000 transition-all">
       EmptyChatContainer
     </div>
   );

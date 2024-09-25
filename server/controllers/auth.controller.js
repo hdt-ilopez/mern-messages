@@ -26,6 +26,8 @@ export const login = async (req, res) => {
       profileSetup: user.profileSetup,
       profilePicture: user.profilePicture,
       userName: user.userName,
+      firstName: user.firstName,
+      lastName: user.lastName,
     });
   } catch (error) {
     console.log({ error });
@@ -76,6 +78,7 @@ export const getUserInfo = async (req, res) => {
       id: user._id,
       email: user.email,
       profileSetup: user.profileSetup,
+      profilePicture: user.profilePicture,
       userName: user.userName,
       firstName: user.firstName,
       lastName: user.lastName,

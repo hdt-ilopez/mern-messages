@@ -28,6 +28,7 @@ const Auth = () => {
       );
 
       if (res.data) {
+        console.log(res.data);
         setUserInfo(res.data);
         toast.success('Login Successful');
       }

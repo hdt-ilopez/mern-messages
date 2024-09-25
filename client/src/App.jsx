@@ -5,16 +5,9 @@ import Profile from './pages/profile';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for react-toastify
 import { useAppStore } from './store';
-import { useEffect } from 'react';
-import { useGetUserData } from './hooks/useGetUserData';
 
 const App = () => {
   const { userInfo } = useAppStore();
-  const { getUserData } = useGetUserData();
-
-  useEffect(() => {
-    getUserData();
-  }, []);
 
   return (
     <BrowserRouter>
