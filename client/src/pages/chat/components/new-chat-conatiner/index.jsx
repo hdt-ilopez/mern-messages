@@ -165,7 +165,11 @@ const NewChatContainer = () => {
             ) : (
               <>
                 <div className="h-screen flex justify-center items-center flex-col gap-4">
-                  <img src="/images/notFound.png" alt="" />
+                  <img
+                    src="/images/notFound.png"
+                    alt="not found image"
+                    width={400}
+                  />
                   <h2 className="text-xl text-[#727697] capitalize font-bold">
                     You do not have any contacts, add a user to begin chatting
                   </h2>
