@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/tooltip';
 import { useLogoutUser } from '@/hooks/useLogoutUser';
 import { useAppStore, useChatStore } from '@/store';
-import { CirclePlus, LogOutIcon } from 'lucide-react';
+import { CirclePlus, LogOutIcon, CircleMinus } from 'lucide-react';
 import { useMediaQuery } from 'react-responsive';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,7 +27,7 @@ const ContactsContainer = () => {
   };
 
   const handleNewChat = () => {
-    setNewChat(true);
+    setNewChat(!newChat);
     setSelectedContact(undefined);
   };
 
@@ -51,11 +51,11 @@ const ContactsContainer = () => {
                       className="bg-transparent border-none hover:bg-transparent hover:text-white transition-all duration-300"
                       onClick={() => handleNewChat()}
                     >
-                      <CirclePlus />
+                      {!newChat ? <CirclePlus /> : <CircleMinus />}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>New Message</p>
+                    {!newChat ? <p>New Message</p> : <p>Close</p>}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
