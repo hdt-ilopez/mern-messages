@@ -2,6 +2,7 @@ import { Button } from './ui/button';
 import { Send } from 'lucide-react';
 import { Input } from './ui/input';
 import { useChatStore } from '@/store';
+import TimeDisplay from './TimeDisplay';
 
 const ChatInput = ({ selectedContact }) => {
   const { selectedChat } = useChatStore();
@@ -12,9 +13,14 @@ const ChatInput = ({ selectedContact }) => {
         {!selectedChat?.messages?.length > 0 && (
           <div className="flex flex-col justify-center items-center mb-4 gap-2">
             {' '}
-            <p className="text-[#727697] font-bold">8:47 AM</p>
+            <p className="text-[#727697] font-bold">
+              {' '}
+              <TimeDisplay />{' '}
+            </p>
             <div className="bg-[#3c4043] text-[#9aa4ad]  p-2 rounded-sm">
-              <p className="capitalize">Texting {selectedContact?.userName}</p>
+              <p className="capitalize">
+                Texting {selectedContact?.firstName} {selectedContact?.lastName}
+              </p>
             </div>
           </div>
         )}

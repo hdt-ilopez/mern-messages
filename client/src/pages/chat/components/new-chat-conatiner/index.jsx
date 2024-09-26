@@ -89,7 +89,7 @@ const NewChatContainer = () => {
                 />
               </Avatar>
               <p className="text-white capitalize">
-                {selectedContact?.userName}
+                {selectedContact?.firstName} {selectedContact?.lastName}
               </p>
             </div>
           ) : (
