@@ -37,7 +37,9 @@ const ContactsContainer = () => {
         <div className="relative md:w-[400px] bg-[#1b1c24] border-r-2 border-[#2f303b] w-screen flex flex-col h-full">
           {/* Header Section */}
           <div>
-            <h1 className="text-4xl font-bold mb-12 p-4">Logo</h1>
+            <h1 className="text-4xl font-bold mb-12 p-4 uppercase">
+              Messa<span className="text-purple-500">gy</span>
+            </h1>
             <div className="flex justify-between items-center text-[#727697] border-b-2 border-[#2f303b] pb-2 mb-3 px-2">
               <h2 className="uppercase font-bold text-lg">Messages</h2>
               <TooltipProvider>
