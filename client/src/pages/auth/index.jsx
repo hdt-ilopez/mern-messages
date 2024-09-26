@@ -58,8 +58,10 @@ const Auth = () => {
         { withCredentials: true }
       );
 
-      if (res.data.user) {
-        setUserInfo(res.data.user);
+      console.log(res);
+
+      if (res.data) {
+        setUserInfo(res.data);
         toast.success('Signup successful');
       }
     } catch (error) {

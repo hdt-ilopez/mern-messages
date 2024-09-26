@@ -15,6 +15,6 @@ export const newChat = (set) => ({
   setNewChat: (newChat) => set({ newChat }),
 });
 export const selectedContact = (set) => ({
-  selectedConact: [],
-  setSelectedContact: (selectedConact) => set({ selectedConact }),
+  selectedContact: undefined,
+  setSelectedContact: (selectedContact) => set({ selectedContact }),
 });

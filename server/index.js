@@ -6,6 +6,8 @@ import mongoose from 'mongoose';
 import morgan from 'morgan';
 
 import authRoutes from './routes/auth.routes.js';
+import userRoutes from './routes/user.routes.js';
+import chatRoutes from './routes/chat.routes.js';
 
 dotenv.config();
 
@@ -25,6 +27,8 @@ app.use(express.json());
 app.use(morgan('common'));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/chat', chatRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

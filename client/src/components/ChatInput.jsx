@@ -3,7 +3,7 @@ import { Send } from 'lucide-react';
 import { Input } from './ui/input';
 import { useChatStore } from '@/store';
 
-const ChatInput = () => {
+const ChatInput = ({ selectedContact }) => {
   const { selectedChat } = useChatStore();
 
   return (
@@ -14,7 +14,7 @@ const ChatInput = () => {
             {' '}
             <p className="text-[#727697] font-bold">8:47 AM</p>
             <div className="bg-[#3c4043] text-[#9aa4ad]  p-2 rounded-sm">
-              <p>Texting Contact</p>
+              <p className="capitalize">Texting {selectedContact?.userName}</p>
             </div>
           </div>
         )}

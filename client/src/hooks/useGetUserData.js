@@ -10,7 +10,7 @@ export const useGetUserData = () => {
   const getUserData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('/api/auth/user-info', {
+      const res = await axios.get('/api/user/user-info', {
         withCredentials: true,
       });
 

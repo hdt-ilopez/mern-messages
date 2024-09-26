@@ -11,16 +11,24 @@ import { useLogoutUser } from '@/hooks/useLogoutUser';
 import { useAppStore, useChatStore } from '@/store';
 import { CirclePlus, LogOutIcon } from 'lucide-react';
 import { useMediaQuery } from 'react-responsive';
+import { useNavigate } from 'react-router-dom';
 
 const ContactsContainer = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const { userInfo } = useAppStore();
+  const { setSelectedContact } = useChatStore();
   const { logout } = useLogoutUser();
+  const navigate = useNavigate();
   const { conversations, selectedChat, setSelectedChat, newChat, setNewChat } =
     useChatStore();
 
   const handleSelectedMessage = (conversation) => {
     setSelectedChat(conversation);
+  };
+
+  const handleNewChat = () => {
+    setNewChat(true);
+    setSelectedContact(undefined);
   };
 
   return (
@@ -39,7 +47,7 @@ const ContactsContainer = () => {
                       variant="outline"
                       size="icon"
                       className="bg-transparent border-none hover:bg-transparent hover:text-white transition-all duration-300"
-                      onClick={() => setNewChat(true)}
+                      onClick={() => handleNewChat()}
                     >
                       <CirclePlus />
                     </Button>
@@ -95,7 +103,10 @@ const ContactsContainer = () => {
             <Separator className="mb-2 bg-[#2f303b]" />
             <div className="flex justify-between items-center p-2">
               <div className="flex gap-2 items-center">
-                <Avatar>
+                <Avatar
+                  className="cursor-pointer"
+                  onClick={() => navigate('/profile')}
+                >
                   <img
                     src={userInfo?.profilePicture}
                     alt={`${userInfo?.userName}'s profile picture`}

@@ -20,9 +20,7 @@ const Profile = () => {
   const [lastName, setLastName] = useState(null);
 
   useEffect(() => {
-    if (!userInfo) {
-      getUserData();
-    }
+    getUserData();
     setUserName(userInfo?.userName);
     setFirstName(userInfo?.firstName);
     setLastName(userInfo?.lastName);
@@ -44,7 +42,7 @@ const Profile = () => {
     try {
       // Make the API request to update the profile
       const res = await axios.post(
-        '/api/auth/update-profile',
+        '/api/user/update-profile',
         {
           userName,
           firstName,

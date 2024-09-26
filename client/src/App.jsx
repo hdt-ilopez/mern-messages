@@ -14,19 +14,19 @@ const App = () => {
       <Routes>
         <Route
           path="/auth"
-          element={!userInfo ? <Auth /> : <Navigate to={'/chat'} />}
+          element={!userInfo ? <Auth /> : <Navigate to={'/'} />}
         />
         <Route
-          path="/chat"
+          path="/"
           element={
             userInfo ? (
               userInfo?.profileSetup ? (
                 <Chat />
               ) : (
-                <Navigate to="/profile" />
+                <Navigate to={'/profile'} />
               )
             ) : (
-              <Navigate to="/auth" />
+              <Navigate to={'/auth'} />
             )
           }
         />
@@ -34,7 +34,6 @@ const App = () => {
           path="/profile"
           element={userInfo ? <Profile /> : <Navigate to={'/auth'} />}
         />
-        <Route path="*" element={<Auth />} />
       </Routes>
       <ToastContainer
         position="top-right"
