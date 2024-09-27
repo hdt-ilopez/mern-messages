@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { messages } from '@/data'; // Initial messages data
-import { useAppStore } from '@/store';
+import { useAppStore, useChatStore } from '@/store';
 import { Button } from './ui/button';
+import { useChat } from '@/hooks/useChat';
 
 const ChatComponent = () => {
   const { userInfo } = useAppStore();
+  const { getMessages } = useChat();
+  const { messages, selectedChat, setSelectedContact } = useChatStore();
   const [isAtBottom, setIsAtBottom] = useState(true); // Track if user is at bottom
   const [showScrollButton, setShowScrollButton] = useState(false); // Show "Scroll to Bottom" button
   const bottomRef = useRef(null);
   const scrollableRef = useRef(null);
+
+  console.log(messages);
 
   // Handle scroll events
   const handleScroll = () => {
@@ -32,6 +36,10 @@ const ChatComponent = () => {
     bottomRef.current?.scrollIntoView({ behavior: 'auto' });
   }, []);
 
+  useEffect(() => {
+    getMessages();
+  }, [selectedChat]);
+
   return (
     <div className="max-h-[80vh] flex flex-col">
       <div
@@ -46,7 +54,13 @@ const ChatComponent = () => {
               message.senderId === userInfo.id ? 'chat-end' : 'chat-start'
             } mb-2`}
           >
-            <div className="chat-bubble">{message.content}</div>
+            <div
+              className={`${
+                message.senderId === userInfo.id ? '' : 'bg-green-600'
+              } chat-bubble  text-white`}
+            >
+              {message.message}
+            </div>
           </div>
         ))}
         <div ref={bottomRef}></div>

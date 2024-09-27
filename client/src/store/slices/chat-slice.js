@@ -2,6 +2,10 @@ export const selectedChat = (set) => ({
   selectedChat: undefined,
   setSelectedChat: (selectedChat) => set({ selectedChat }),
 });
+export const messages = (set) => ({
+  messages: [],
+  setMessages: (messages) => set({ messages }),
+});
 export const conversations = (set) => ({
   conversations: [],
   setConversations: (conversations) => set({ conversations }),

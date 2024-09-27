@@ -7,15 +7,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useChat } from '@/hooks/useChat';
 import { useLogoutUser } from '@/hooks/useLogoutUser';
 import { useAppStore, useChatStore } from '@/store';
 import { CirclePlus, LogOutIcon, CircleMinus } from 'lucide-react';
+import { useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useNavigate } from 'react-router-dom';
 
 const ContactsContainer = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const { userInfo } = useAppStore();
+  const { getConversations, messages } = useChat();
   const { setSelectedContact } = useChatStore();
   const { logout } = useLogoutUser();
   const navigate = useNavigate();
@@ -30,6 +33,12 @@ const ContactsContainer = () => {
     setNewChat(!newChat);
     setSelectedContact(undefined);
   };
+
+  useEffect(() => {
+    getConversations();
+  }, [messages]);
+
+  console.log(conversations);
 
   return (
     <>
@@ -64,41 +73,50 @@ const ContactsContainer = () => {
 
           {/* Conversations List */}
           <div className="flex-1 overflow-y-auto px-2">
-            {conversations.map((conversation) => (
-              <div
-                key={conversation._id}
-                className="flex items-center gap-2 mb-4 cursor-pointer hover:bg-[#2f303b] p-2 rounded-md"
-                onClick={() => handleSelectedMessage(conversation)}
-              >
-                <Avatar className="bg-[#727697]">
-                  <img
-                    src={conversation.recipient.profilePicture}
-                    alt={`${conversation.recipient.userName}'s Profile Picture`}
-                    className="rounded-full"
-                  />
-                </Avatar>
-                <div className="flex-1 overflow-hidden">
-                  <p
-                    className={`${
-                      conversation.messages[0].read === false
-                        ? 'font-bold'
-                        : 'text-white/70'
-                    } capitalize`}
+            {conversations && conversations?.length > 0 && (
+              <>
+                {conversations.map((conversation) => (
+                  <div
+                    key={conversation._id}
+                    className="flex items-center gap-2 mb-4 cursor-pointer hover:bg-[#2f303b] p-2 rounded-md"
+                    onClick={() => handleSelectedMessage(conversation)}
                   >
-                    {conversation.recipient.userName}
-                  </p>
-                  <p
-                    className={`${
-                      conversation.messages[0].read
-                        ? 'text-[#727697]'
-                        : 'text-white font-bold'
-                    } text-sm truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-full`}
-                  >
-                    {conversation.messages[0]?.content}
-                  </p>
-                </div>
-              </div>
-            ))}
+                    <Avatar className="bg-[#727697]">
+                      <img
+                        src={conversation?.participants[0]?.profilePicture}
+                        alt={`${conversation?.participants[0]?.userName}'s Profile Picture`}
+                        className="rounded-full"
+                      />
+                    </Avatar>
+                    <div className="flex-1 overflow-hidden">
+                      <p
+                        className={`${
+                          conversation?.messages[0]?.senderId !==
+                            userInfo?.id &&
+                          conversation?.messages[0]?.readStatus === false
+                            ? 'font-bold'
+                            : 'text-white/70'
+                        } capitalize`}
+                      >
+                        {conversation?.participants[0]?.firstName}{' '}
+                        {conversation?.participants[0]?.lastName}
+                      </p>
+                      <p
+                        className={`${
+                          conversation?.messages[0]?.senderId !==
+                            userInfo?.id &&
+                          conversation?.messages[0]?.readStatus === false
+                            ? 'text-white font-bold'
+                            : 'text-[#727697]'
+                        } text-sm truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-full`}
+                      >
+                        {conversation?.messages[0]?.message}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
 
           <div className="px-2">

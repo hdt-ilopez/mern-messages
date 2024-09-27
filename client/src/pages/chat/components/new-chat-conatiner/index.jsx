@@ -51,8 +51,6 @@ const NewChatContainer = () => {
     fetchSuggestions();
   }, [searchQuery]);
 
-  console.log(userSuggestions);
-
   const handleCloseNewChat = () => {
     setNewChat(false);
     setSelectedContact(undefined);
@@ -111,7 +109,6 @@ const NewChatContainer = () => {
       )}
       <Separator className="m-0 bg-[#2f303b]" />
 
-      {/* Contacts List or Chat Content */}
       <div className="flex-1 overflow-y-auto">
         {!selectedContact || selectedContact?.length === 0 ? (
           <div className="flex flex-col  mt-4">
@@ -178,7 +175,7 @@ const NewChatContainer = () => {
             )}
           </div>
         ) : (
-          <ChatInput selectedContact={selectedContact} />
+          <ChatInput contact={selectedContact} />
         )}
       </div>
     </div>

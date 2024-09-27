@@ -4,12 +4,12 @@ const ContactSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Users',
       required: true,
     },
     contactId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Users',
       required: true,
     },
     blocked: {

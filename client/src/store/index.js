@@ -4,6 +4,7 @@ import { persist } from 'zustand/middleware';
 import {
   contacts,
   conversations,
+  messages,
   newChat,
   selectedChat,
   selectedContact,
@@ -25,6 +26,7 @@ export const useAppStore = create(
 export const useChatStore = create((set, get) => ({
   ...conversations(set, get),
   ...selectedChat(set, get),
+  ...messages(set, get),
   ...contacts(set, get),
   ...selectedContact(set, get),
   ...newChat(set, get),
