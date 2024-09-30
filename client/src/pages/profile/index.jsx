@@ -57,7 +57,7 @@ const Profile = () => {
       if (res.data) {
         setUserInfo(res.data);
         toast.success('Profile successfully updated');
-        navigate('/chat');
+        navigate('/');
       }
     } catch (error) {
       toast.error(error.response.data);

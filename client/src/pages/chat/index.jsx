@@ -10,7 +10,7 @@ const Chat = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   return (
-    <div className="flex h-screen text-white overflow-hidden">
+    <div className="flex h-screen text-white overflow-hidden ">
       <ContactsContainer />
       {newChat ? (
         <NewChatContainer />

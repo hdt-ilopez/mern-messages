@@ -1,3 +1,4 @@
+import Contacts from '../model/contacts.model.js';
 import Conversation from '../model/conversation.model.js';
 import Message from '../model/message.model.js';
 import User from '../model/user.model.js';
@@ -37,6 +38,23 @@ export const newConversation = async (req, res) => {
     const conversation = await Conversation.create({
       participants: [userId, recipient],
     });
+
+    let contact = await Contacts.findOne({
+      userId: userId,
+      contactId: recipient,
+    });
+
+    // If no contact exists, create and save a new one
+    if (!contact) {
+      contact = new Contacts({
+        userId: userId,
+        contactId: recipient,
+        blocked: false,
+        favorite: false,
+      });
+
+      await contact.save(); // Explicitly save the new contact to the database
+    }
 
     return res.status(200).json(conversation);
   } catch (error) {
@@ -96,7 +114,7 @@ export const getMessages = async (req, res) => {
 
     const conversation = await Conversation.findById(conversationId).populate({
       path: 'messages',
-      options: { limit: 10, sort: { createdAt: 1 } },
+      options: { limit: 25, sort: { createdAt: 1 } },
     });
 
     if (!conversation) {

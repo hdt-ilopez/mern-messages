@@ -5,48 +5,56 @@ import { useChatStore } from '@/store';
 import TimeDisplay from './TimeDisplay';
 import { useState } from 'react';
 import { useChat } from '@/hooks/useChat';
+import { useGetUserContacts } from '@/hooks/useGetUserContacts';
 
 const ChatInput = ({ contact }) => {
-  const { selectedChat } = useChatStore();
-  const { sendMessage, createConversation } = useChat();
+  const { sendMessage, createConversation, getConversations } = useChat();
+  const { messages, selectedChat } = useChatStore();
   const [message, setMessage] = useState('');
 
   const handleSendMessage = async () => {
     try {
       if (!selectedChat) {
-        await createConversation();
+        await createConversation(message);
+      } else {
+        await sendMessage(message);
       }
 
-      await sendMessage(message);
+      getConversations();
+
       setMessage('');
     } catch (error) {
       console.error(error);
     }
   };
 
-  console.log(selectedChat);
-
   return (
-    <div className="flex flex-col justify-end h-full">
+    <>
       <div className="p-4">
-        {!selectedChat?.messages?.length > 0 && (
+        {(!selectedChat ||
+          (selectedChat?.messages?.length === 0 &&
+            (!messages || messages.length === 0))) && (
           <div className="flex flex-col justify-center items-center mb-4 gap-2">
-            {' '}
             <p className="text-[#727697] font-bold">
-              {' '}
-              <TimeDisplay />{' '}
+              <TimeDisplay />
             </p>
-            <div className="bg-[#3c4043] text-[#9aa4ad]  p-2 rounded-sm">
+            <div className="bg-[#3c4043] text-[#9aa4ad] p-2 rounded-sm">
               <p className="capitalize">
                 Texting {contact?.firstName} {contact?.lastName}
               </p>
             </div>
           </div>
         )}
+
         <div className="flex items-center gap-2">
           <Input
             placeholder="Text Message"
             onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSendMessage();
+              }
+            }}
             value={message}
             className="rounded-full h-12 border-none bg-[#3c4043] text-white placeholder:text-[#9aa4ad]"
           />
@@ -60,7 +68,7 @@ const ChatInput = ({ contact }) => {
           </Button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

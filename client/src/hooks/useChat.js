@@ -14,7 +14,29 @@ export const useChat = () => {
   } = useChatStore();
   const { userInfo } = useAppStore();
 
-  const createConversation = async () => {
+  const sendMessage = async (message) => {
+    setLoading(true);
+
+    try {
+      const res = await axios.post(
+        `/api/chat/send-message/${selectedChat._id}`,
+        {
+          message,
+          recipient: selectedContact._id,
+        },
+        {
+          withCredentials: true, // Moved withCredentials to the config object
+        }
+      );
+      setMessages([...messages, res.data]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createConversation = async (message) => {
     setLoading(true);
     const recipient = selectedContact._id;
 
@@ -24,11 +46,21 @@ export const useChat = () => {
         withCredentials: true,
       });
 
-      console.log(res.data);
-
       if (res.data) {
         setSelectedChat(res.data);
       }
+
+      const sendMessage = await axios.post(
+        `/api/chat/send-message/${res.data._id}`,
+        {
+          message,
+          recipient: selectedContact._id,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      setMessages([...messages, sendMessage.data]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -49,28 +81,6 @@ export const useChat = () => {
       }
     } catch (error) {
       console.error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const sendMessage = async (message) => {
-    setLoading(true);
-
-    try {
-      const res = await axios.post(
-        `/api/chat/send-message/${selectedChat._id}`,
-        {
-          message,
-          recipient: selectedContact._id,
-        },
-        {
-          withCredentials: true, // Moved withCredentials to the config object
-        }
-      );
-      setMessages([...messages, res.data]);
-    } catch (error) {
-      console.error(error);
     } finally {
       setLoading(false);
     }

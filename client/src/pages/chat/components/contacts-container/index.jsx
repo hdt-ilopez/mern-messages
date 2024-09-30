@@ -22,28 +22,37 @@ const ContactsContainer = () => {
   const { setSelectedContact } = useChatStore();
   const { logout } = useLogoutUser();
   const navigate = useNavigate();
-  const { conversations, selectedChat, setSelectedChat, newChat, setNewChat } =
-    useChatStore();
+  const {
+    conversations,
+    selectedChat,
+    setSelectedChat,
+    newChat,
+    setNewChat,
+    setMessages,
+  } = useChatStore();
 
   const handleSelectedMessage = (conversation) => {
+    setNewChat(false);
+    setSelectedContact(undefined);
+    setSelectedChat(undefined);
     setSelectedChat(conversation);
   };
 
   const handleNewChat = () => {
     setNewChat(!newChat);
     setSelectedContact(undefined);
+    setSelectedChat(undefined);
+    setMessages([]);
   };
 
   useEffect(() => {
     getConversations();
   }, [messages]);
 
-  console.log(conversations);
-
   return (
     <>
       {(!isMobile || (isMobile && !newChat && !selectedChat)) && (
-        <div className="relative md:w-[400px] bg-[#1b1c24] border-r-2 border-[#2f303b] w-screen flex flex-col h-full">
+        <div className=" md:w-[400px] bg-[#1b1c24] border-r-2 border-[#2f303b] w-screen flex flex-col h-full">
           {/* Header Section */}
           <div>
             <h1 className="text-4xl font-bold mb-12 p-4 uppercase">

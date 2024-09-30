@@ -12,8 +12,6 @@ const ChatComponent = () => {
   const bottomRef = useRef(null);
   const scrollableRef = useRef(null);
 
-  console.log(messages);
-
   // Handle scroll events
   const handleScroll = () => {
     const scrollable = scrollableRef.current;
@@ -29,42 +27,48 @@ const ChatComponent = () => {
     if (isAtBottom) {
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [isAtBottom]);
+  }, [messages, isAtBottom]);
 
   // Initial scroll to bottom
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'auto' });
   }, []);
 
+  // Fetch messages when selectedChat changes
   useEffect(() => {
-    getMessages();
+    if (selectedChat) {
+      getMessages();
+    }
   }, [selectedChat]);
 
   return (
-    <div className="max-h-[80vh] flex flex-col">
-      <div
-        className="flex-1 overflow-y-auto "
-        ref={scrollableRef}
-        onScroll={handleScroll}
-      >
-        {messages.map((message, index) => (
+    <div
+      className="flex flex-col overflow-y-auto h-full max-h-[75vh] justify-end"
+      ref={scrollableRef}
+      onScroll={handleScroll}
+    >
+      {messages.length === 0 && (
+        <div className="flex-grow flex items-center justify-center text-gray-500 h-24">
+          No messages yet. Start the conversation!
+        </div>
+      )}
+      {messages.map((message) => (
+        <div
+          key={message.id} // Assuming each message has a unique 'id'
+          className={`chat mb-2 ${
+            message.senderId === userInfo.id ? 'chat-end' : 'chat-start'
+          }`}
+        >
           <div
-            key={index}
-            className={`chat ${
-              message.senderId === userInfo.id ? 'chat-end' : 'chat-start'
-            } mb-2`}
+            className={`chat-bubble text-white ${
+              message.senderId === userInfo.id ? 'bg-blue-500' : 'bg-green-600'
+            }`}
           >
-            <div
-              className={`${
-                message.senderId === userInfo.id ? '' : 'bg-green-600'
-              } chat-bubble  text-white`}
-            >
-              {message.message}
-            </div>
+            {message.message}
           </div>
-        ))}
-        <div ref={bottomRef}></div>
-      </div>
+        </div>
+      ))}
+      <div ref={bottomRef} /> {/* Keeps scroll at the bottom */}
       {showScrollButton && (
         <Button
           className="fixed bottom-24 right-5 bg-purple-500 text-white px-4 py-2 rounded-full shadow-lg"

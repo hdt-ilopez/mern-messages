@@ -1,24 +1,45 @@
+import ChatComponent from '@/components/ChatComponent';
 import ChatInput from '@/components/ChatInput';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useGetUserContacts } from '@/hooks/useGetUserContacts';
 import { useChatStore } from '@/store';
+import { selectedChat } from '@/store/slices/chat-slice';
 import { Avatar } from '@radix-ui/react-avatar';
 import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const NewChatContainer = () => {
-  const { setNewChat, contacts, selectedContact, setSelectedContact } =
-    useChatStore();
+  const {
+    setNewChat,
+    contacts,
+    selectedContact,
+    setSelectedContact,
+    conversations,
+    setSelectedChat,
+    setMessages,
+  } = useChatStore();
   const { loading, getUserContacts } = useGetUserContacts();
   const [searchQuery, setSearchQuery] = useState('');
   const [userSuggestions, setUserSuggestions] = useState();
 
   const handleSetSelectedContact = (contact) => {
-    console.log('selected contact', contact);
-    setSelectedContact(contact);
+    if (contact._id) {
+      const matchedConversation = conversations.find((conversation) =>
+        conversation.participants.some(
+          (participant) => participant._id === contact._id
+        )
+      );
+
+      if (matchedConversation) {
+        setNewChat(false);
+        setSelectedChat(matchedConversation);
+      } else {
+        setSelectedContact(contact);
+      }
+    }
   };
 
   useEffect(() => {
@@ -54,6 +75,8 @@ const NewChatContainer = () => {
   const handleCloseNewChat = () => {
     setNewChat(false);
     setSelectedContact(undefined);
+    setSelectedChat(undefined);
+    setMessages([]);
   };
 
   if (loading) {
@@ -111,71 +134,83 @@ const NewChatContainer = () => {
 
       <div className="flex-1 overflow-y-auto">
         {!selectedContact || selectedContact?.length === 0 ? (
-          <div className="flex flex-col  mt-4">
-            {contacts?.length > 0 || !contacts ? (
-              <>
-                <div className="flex gap-2 items-center pl-2 mb-4">
-                  <p className="text-lg">To: </p>
-                  <Input
-                    placeholder="Type a username to start a chat"
-                    className="border-none focus-visible:ring-transparent"
-                  />
-                </div>
-                <Separator className="m-0" />
-                <>
-                  {' '}
-                  {contacts.map((contact) => (
-                    <div
-                      key={contact._id}
-                      className="flex items-center gap-2 p-2 bg-[#2f303b] rounded-md cursor-pointer hover:bg-[#3a3b45] transition-all"
-                      onClick={() => handleSetSelectedContact(contact)}
-                    >
-                      {contact.userName}
-                    </div>
-                  ))}
-                </>
-              </>
-            ) : userSuggestions?.length > 0 ? (
-              <>
-                {userSuggestions.map((user, index) => (
-                  <div
-                    className="flex gap-2 hover:bg-[#727697] p-2 rounded-sm duration-300 transition-all cursor-pointer"
-                    key={index}
-                    onClick={() => handleSetSelectedContact(user)}
-                  >
-                    <Avatar>
-                      <img
-                        src={user?.profilePicture}
-                        alt={`${user?.firstName}'s profile picture`}
-                        width={50}
-                      />
-                    </Avatar>
-                    <div>
-                      <p className="text-lg font-bold">
-                        {user?.firstName} {user?.lastName}{' '}
-                      </p>
-                      <p className="text-sm text-white/60">@{user?.userName}</p>
-                    </div>
-                  </div>
-                ))}
-              </>
+          <div className="flex flex-col mt-4">
+            {(!contacts || contacts.length === 0) &&
+            (!userSuggestions || userSuggestions.length === 0) ? (
+              // Show the "no contacts" message when both contacts and userSuggestions are empty or not present
+              <div className="h-screen flex justify-center items-center flex-col gap-4">
+                <img
+                  src="/images/notFound.png"
+                  alt="not found image"
+                  width={400}
+                />
+                <h2 className="text-xl text-[#727697] capitalize font-bold">
+                  You do not have any contacts, add a user to begin chatting
+                </h2>
+              </div>
             ) : (
               <>
-                <div className="h-screen flex justify-center items-center flex-col gap-4">
-                  <img
-                    src="/images/notFound.png"
-                    alt="not found image"
-                    width={400}
-                  />
-                  <h2 className="text-xl text-[#727697] capitalize font-bold">
-                    You do not have any contacts, add a user to begin chatting
-                  </h2>
-                </div>
+                {!searchQuery ? (
+                  <div className="flex flex-col gap-2">
+                    {contacts?.map(({ contactId }) => (
+                      <div
+                        key={contactId._id}
+                        className="flex items-center gap-2 p-2  rounded-md cursor-pointer hover:bg-[#3a3b45] transition-all"
+                        onClick={() => handleSetSelectedContact(contactId)}
+                      >
+                        <img
+                          src={contactId?.profilePicture}
+                          alt={`${contactId?.firstName}'s profile picture`}
+                          width={50}
+                        />
+                        <div>
+                          <p className="text-lg font-semibold">
+                            {contactId.firstName} {contactId.lastName}
+                          </p>
+                          <p className="text-sm capitalize text-[#727697]">
+                            @{contactId.userName}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    {userSuggestions?.map((user, index) => (
+                      <div
+                        className="flex gap-2 hover:bg-[#727697] p-2 rounded-sm duration-300 transition-all cursor-pointer"
+                        key={index}
+                        onClick={() => handleSetSelectedContact(user)}
+                      >
+                        <Avatar>
+                          <img
+                            src={user?.profilePicture}
+                            alt={`${user?.firstName}'s profile picture`}
+                            width={50}
+                          />
+                        </Avatar>
+                        <div>
+                          <p className="text-lg font-bold">
+                            {user?.firstName} {user?.lastName}
+                          </p>
+                          <p className="text-sm text-white/60">
+                            @{user?.userName}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
               </>
             )}
           </div>
         ) : (
-          <ChatInput contact={selectedContact} />
+          <div className="relative h-full">
+            <div className="absolute bottom-0 w-full">
+              <ChatComponent />
+              <ChatInput contact={selectedContact} />
+            </div>
+          </div>
         )}
       </div>
     </div>
