@@ -3,7 +3,6 @@ import Auth from './pages/auth';
 import Chat from './pages/chat';
 import Profile from './pages/profile';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for react-toastify
 import { useAppStore } from './store';
 
 const App = () => {

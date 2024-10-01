@@ -137,7 +137,6 @@ const NewChatContainer = () => {
           <div className="flex flex-col mt-4">
             {(!contacts || contacts.length === 0) &&
             (!userSuggestions || userSuggestions.length === 0) ? (
-              // Show the "no contacts" message when both contacts and userSuggestions are empty or not present
               <div className="h-screen flex justify-center items-center flex-col gap-4">
                 <img
                   src="/images/notFound.png"

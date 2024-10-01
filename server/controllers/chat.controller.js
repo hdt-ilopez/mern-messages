@@ -44,7 +44,6 @@ export const newConversation = async (req, res) => {
       contactId: recipient,
     });
 
-    // If no contact exists, create and save a new one
     if (!contact) {
       contact = new Contacts({
         userId: userId,
@@ -53,7 +52,7 @@ export const newConversation = async (req, res) => {
         favorite: false,
       });
 
-      await contact.save(); // Explicitly save the new contact to the database
+      await contact.save();
     }
 
     return res.status(200).json(conversation);
@@ -140,7 +139,6 @@ export const getConversations = async (req, res) => {
       return res.status(400).send('Missing userId');
     }
 
-    // Fetch conversations and populate participants and last message
     const conversations = await Conversation.find({
       participants: userId,
     })

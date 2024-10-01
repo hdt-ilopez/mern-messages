@@ -17,8 +17,6 @@ const TimeDisplay = () => {
 
   function successCallback(position) {
     const { latitude, longitude } = position.coords;
-
-    // Use the Google Time Zone API to get the timezone
     const googleTimeZoneApiUrl = `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=${Math.floor(
       Date.now() / 1000
     )}&key=AIzaSyCQ4uXnNrW-HeOmCkHGTlaiRgOuyGg3YBs`;
@@ -34,7 +32,7 @@ const TimeDisplay = () => {
             minute: 'numeric',
             hour12: true,
           });
-          setTime(currentTime); // Set formatted time in state
+          setTime(currentTime);
         } else {
           console.error('Error fetching timezone data:', data.status);
         }

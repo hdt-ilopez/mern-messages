@@ -25,7 +25,7 @@ export const useChat = () => {
           recipient: selectedContact._id,
         },
         {
-          withCredentials: true, // Moved withCredentials to the config object
+          withCredentials: true,
         }
       );
       setMessages([...messages, res.data]);

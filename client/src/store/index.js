@@ -10,7 +10,6 @@ import {
   selectedContact,
 } from './slices/chat-slice';
 
-// Create the store with the persist middleware
 export const useAppStore = create(
   persist(
     (set, get) => ({

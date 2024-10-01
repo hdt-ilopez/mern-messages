@@ -33,14 +33,12 @@ const Profile = () => {
   const svg = avatar.toDataUri();
 
   const handleUpdateProfile = async () => {
-    // Check if required fields are filled
     if (!userName || !firstName || !lastName) {
       toast.error('Username, first, and last name are required');
       return;
     }
 
     try {
-      // Make the API request to update the profile
       const res = await axios.post(
         '/api/user/update-profile',
         {
