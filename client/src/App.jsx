@@ -4,9 +4,11 @@ import Chat from './pages/chat';
 import Profile from './pages/profile';
 import { ToastContainer } from 'react-toastify';
 import { useAppStore } from './store';
+import useListenMessages from './hooks/useListenMessages';
 
 const App = () => {
   const { userInfo } = useAppStore();
+  useListenMessages();
 
   return (
     <BrowserRouter>

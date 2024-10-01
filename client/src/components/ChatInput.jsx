@@ -5,7 +5,6 @@ import { useChatStore } from '@/store';
 import TimeDisplay from './TimeDisplay';
 import { useState } from 'react';
 import { useChat } from '@/hooks/useChat';
-import { useGetUserContacts } from '@/hooks/useGetUserContacts';
 
 const ChatInput = ({ contact }) => {
   const { sendMessage, createConversation, getConversations } = useChat();
@@ -14,15 +13,19 @@ const ChatInput = ({ contact }) => {
 
   const handleSendMessage = async () => {
     try {
+      let res;
       if (!selectedChat) {
-        await createConversation(message);
+        res = await createConversation(message);
       } else {
-        await sendMessage(message);
+        res = await sendMessage(message);
       }
 
-      getConversations();
+      console.log(res);
 
-      setMessage('');
+      if (res.status === 200 || res.status === 201) {
+        getConversations();
+        setMessage('');
+      }
     } catch (error) {
       console.error(error);
     }

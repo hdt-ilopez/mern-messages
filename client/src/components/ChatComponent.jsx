@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { useAppStore, useChatStore } from '@/store';
 import { Button } from './ui/button';
 import { useChat } from '@/hooks/useChat';
+import { useUpdateReadStatus } from '@/hooks/updateReadStatus';
 
 const ChatComponent = () => {
   const { userInfo } = useAppStore();
   const { getMessages } = useChat();
   const { messages, selectedChat, setSelectedContact } = useChatStore();
+  const { updateReadStatus } = useUpdateReadStatus();
   const [isAtBottom, setIsAtBottom] = useState(true); // Track if user is at bottom
   const [showScrollButton, setShowScrollButton] = useState(false); // Show "Scroll to Bottom" button
   const bottomRef = useRef(null);
@@ -40,6 +42,18 @@ const ChatComponent = () => {
       getMessages();
     }
   }, [selectedChat]);
+
+  useEffect(() => {
+    const latestMessage = messages[messages.length - 1];
+
+    if (
+      latestMessage &&
+      latestMessage.receiverId === userInfo.id &&
+      latestMessage.readStatus === false
+    ) {
+      updateReadStatus(latestMessage._id);
+    }
+  }, [messages, userInfo.id]);
 
   return (
     <div

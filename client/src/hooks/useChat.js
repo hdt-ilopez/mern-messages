@@ -29,6 +29,7 @@ export const useChat = () => {
         }
       );
       setMessages([...messages, res.data]);
+      return res;
     } catch (error) {
       console.error(error);
     } finally {
@@ -61,6 +62,7 @@ export const useChat = () => {
         }
       );
       setMessages([...messages, sendMessage.data]);
+      return res;
     } catch (error) {
       console.error(error);
     } finally {

@@ -2,6 +2,7 @@ import Contacts from '../model/contacts.model.js';
 import Conversation from '../model/conversation.model.js';
 import Message from '../model/message.model.js';
 import User from '../model/user.model.js';
+import { getReceiverSocketId, io } from '../socket.js';
 
 export const userSuggestions = async (req, res) => {
   const { searchQuery } = req.body;
@@ -68,6 +69,7 @@ export const sendMessage = async (req, res) => {
   const { conversationId } = req.params;
 
   try {
+    // Validate request body and params
     if (!conversationId) {
       return res.status(400).send('Missing conversation id');
     }
@@ -80,25 +82,78 @@ export const sendMessage = async (req, res) => {
       return res.status(400).send('Missing message');
     }
 
+    // Find the conversation by ID
     const conversation = await Conversation.findById(conversationId);
+    if (!conversation) {
+      return res.status(404).send('Conversation not found');
+    }
 
+    // Create a new message
     const newMessage = new Message({
       senderId: userId,
       receiverId: recipient,
       message,
     });
 
-    if (newMessage) {
-      conversation.messages.push(newMessage._id);
+    // Add the message to the conversation
+    conversation.messages.push(newMessage._id);
+
+    // Save both conversation and message concurrently
+    await Promise.all([conversation.save(), newMessage.save()]);
+
+    // Get the receiver's socket ID
+    const receiverSocketId = getReceiverSocketId(recipient);
+    if (receiverSocketId) {
+      // Emit the new message to the receiver via Socket.IO
+      io.to(receiverSocketId).emit('newMessage', newMessage);
     }
 
-    await conversation.save();
-    await newMessage.save();
-
+    // Respond with the new message
     return res.status(201).json(newMessage);
   } catch (error) {
-    console.error(error);
+    console.error('Error in sendMessage:', error);
     return res.status(500).send('Internal server error');
+  }
+};
+
+export const updateReadStatus = async (req, res) => {
+  const userId = req.userId; // Assuming userId is a string
+  const { messageId } = req.params;
+
+  console.log('UserId:', userId);
+  console.log('MessageId:', messageId);
+
+  try {
+    const message = await Message.findById(messageId);
+
+    console.log('Message:', message);
+
+    if (!message) {
+      return res.status(404).send('Message not found');
+    }
+
+    // Convert ObjectIds to strings for comparison
+    const senderId = message.senderId.toString();
+    const receiverId = message.receiverId.toString();
+
+    console.log('SenderId:', senderId);
+    console.log('ReceiverId:', receiverId);
+
+    // Check if the user is either the sender or the receiver
+    if (senderId !== userId && receiverId !== userId) {
+      return res.status(403).send('User is not a participant in the message');
+    }
+
+    // Update the single read status
+    message.readStatus = true;
+    const newMessage = await message.save();
+
+    console.log('New Message:', newMessage);
+
+    return res.status(200).json(newMessage);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send('Internal Server Error');
   }
 };
 
