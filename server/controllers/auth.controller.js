@@ -1,8 +1,9 @@
 import User from '../model/user.model.js';
 import createAuthToken from '../utils/createAuthToken.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 export const login = async (req, res) => {
-  console.log('login accessed');
   try {
     const { email, password } = req.body;
 
@@ -16,6 +17,13 @@ export const login = async (req, res) => {
     if (!user) {
       console.log('User Not Found');
       return res.status(404).send('User not found');
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      console.log('Passwords do not match');
+      return res.status(403).send('Email or password incorrect');
     }
 
     createAuthToken(email, user._id, res);
@@ -62,6 +70,23 @@ export const signup = async (req, res) => {
     console.log({ error });
     return res.status(500).send('Internal Server Error');
   }
+};
+
+export const verifyInitialToken = (req, res) => {
+  const token = req.cookies.jwt;
+
+  if (!token) {
+    return res.status(401).send('Token missing or expired, please login');
+  }
+
+  jwt.verify(token, process.env.JWT_KEY, async (err) => {
+    if (err) {
+      return res.status(403).send('Token is not valid!');
+    }
+
+    console.log('Token is valid');
+    return res.status(200).send('Token valid');
+  });
 };
 
 export const logout = (req, res) => {

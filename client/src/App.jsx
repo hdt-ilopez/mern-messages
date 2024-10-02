@@ -3,12 +3,20 @@ import Auth from './pages/auth';
 import Chat from './pages/chat';
 import Profile from './pages/profile';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useAppStore } from './store';
 import useListenMessages from './hooks/useListenMessages';
+import { useCheckAuthToken } from './hooks/useCheckAuthToken';
+import { useEffect } from 'react';
 
 const App = () => {
   const { userInfo } = useAppStore();
+  const { checkAuthToken } = useCheckAuthToken();
   useListenMessages();
+
+  useEffect(() => {
+    checkAuthToken();
+  }, []);
 
   return (
     <BrowserRouter>
@@ -40,9 +48,7 @@ const App = () => {
         position="top-right"
         autoClose={2000}
         hideProgressBar={false}
-        newestOnTop={false}
         closeOnClick
-        rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
